@@ -1,16 +1,21 @@
-#ifndef __WORLD_AH__
-#define __WORLD_AH__
-
 #include <iostream>
 using namespace std;
+
+void (*funcPtr)(int);
 
 aspect World {
 
   advice execution("void hello(int)") && args(val) : after(int val) {
     //print "World" after execution of the 'hello()' function
     cout << "From Aspect " << val << endl;
+    funcPtr = &hello;
+    if (val < 10) {
+      funcPtr(10);
+    }
   }
-  
+
+  /*advice AddAdvice() {
+    funcPtr(10);
+  }*/
 };
 
-#endif

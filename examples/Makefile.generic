@@ -15,7 +15,7 @@ INCLUDE_LIST := $(patsubst %.ah,-include %.ah,$(ASPECTS))
 all: $(PROG)
 
 run: all
-	./$(PROG)
+	@./$(PROG)
 
 $(PROG): $(OBJECTS)
 	@echo Linking $@
