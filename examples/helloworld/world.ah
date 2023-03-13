@@ -1,21 +1,83 @@
 #include <iostream>
+#include <unistd.h>
+#include <pthread.h>
+
 using namespace std;
 
-void (*funcPtr)(int);
+/*
+   typedef void (*funcPtr)(int);
 
-aspect World {
+   void *gregory(void *data) {
+   funcPtr pHello = (funcPtr)data;
+   sleep(3);
+   cout << "Gregory is about to say hello 100 " << endl;
+   pHello(100);
+   return NULL;	
+   }
+   int once = 1; 
 
-  advice execution("void hello(int)") && args(val) : after(int val) {
-    //print "World" after execution of the 'hello()' function
-    cout << "From Aspect " << val << endl;
-    funcPtr = &hello;
-    if (val < 10) {
-      funcPtr(10);
-    }
-  }
+   aspect World {
 
-  /*advice AddAdvice() {
-    funcPtr(10);
-  }*/
+   advice execution("void hello(int)") && args(val) : after(int val) {
+//print "World" after execution of the 'hello()' function
+cout << "From Aspect " << val << endl;
+if (once) {
+pthread_t th;
+pthread_create(&th, NULL, gregory, (void*)tjp->entity());	
+once = 0;
+} 
+}
+
 };
+ */
+static pthread_mutex_t lock;
+static int value = 0;
+typedef void (*funcPtr)(int);
+static funcPtr pSetVal;
+static void *gregory(void *data) {
+	cout << "Gregory is called " << endl;
+	pSetVal = (funcPtr)data;
+	for(;;) {
+		//wait on mutex
+		//acquire mutex
+		//check the value of counter
+		//if the value of counter is 10, reset it to 5
+		//release mutex
+		pthread_mutex_lock(&lock);
+		cout << "checking val " << value << endl;
+		if (value == 10) {
+			pSetVal(5);	
+			return NULL;	
+		} 
+		pthread_mutex_unlock(&lock);
+		sleep(1);
+	}
+	return NULL;	
+}
 
+aspect Counter {
+
+	advice execution("void create(const char*)") && args(val) : after(const char* val) {
+		//print "World" after execution of the 'hello()' function
+		cout << "The Aspect knows that " << val << " is created " << endl;
+ 		if (pthread_mutex_init(&lock, NULL) != 0) {
+        		cout << "\n mutex init has failed\n";
+        		exit(1);
+    		}	
+		pthread_t th;
+		int err = pthread_create(&th, NULL, gregory, (void*)&setValue);	
+		if (err != 0) {
+			cout << "Gregory cannot be created" << endl;
+		}
+		sleep(1);	
+	}
+	
+	advice execution("void setValue(int)") && args(val) : after(int val) {
+		cout << "Aspect knows that the counter was set to " << val << endl;
+		pthread_mutex_lock(&lock);
+		value = val;
+		pthread_mutex_unlock(&lock);
+		sleep(1);
+	}
+
+};

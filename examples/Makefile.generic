@@ -19,7 +19,7 @@ run: all
 
 $(PROG): $(OBJECTS)
 	@echo Linking $@
-	@$(CXX) $(CXXFLAGS) -o $@ $(OBJECTS) $(LDFLAGS)
+	@$(CXX) $(CXXFLAGS) -o $@ $(OBJECTS) $(LDFLAGS) -lpthread
 
 clean:
 	@rm -rf *.o $(JUNK) $(PROG)
