@@ -1,6 +1,5 @@
 # include ../Makefile.generic
 
-
 CXX ?= g++
 ACXX ?= $(PWD)/../../ag++
 
@@ -12,7 +11,6 @@ OBJECTS := $(addprefix $(JUNK)/,$(patsubst %.cpp,%.o,$(SOURCES)))
 
 
 all: $(PROG)
-counter: counter
 
 run: all
 	@./counter
