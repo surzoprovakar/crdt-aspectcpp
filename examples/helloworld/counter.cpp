@@ -10,5 +10,3 @@ void setValue(int val) {
 	cout << "setting counter to " << val << endl;	
 	counter = val;
 }
-
-
