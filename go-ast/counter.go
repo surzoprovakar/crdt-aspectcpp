@@ -15,7 +15,7 @@ func setValue(val int) {
 
 func main() {
 	create("counter 1")
-	for i := 0; i < 10; i++ {
+	for i := 0; i < 15; i++ {
 		setValue(i + 1)
 	}
 }

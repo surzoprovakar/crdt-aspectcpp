@@ -16,7 +16,7 @@ import (
 
 func main() {
 	fset := token.NewFileSet()
-	file, err := parser.ParseFile(fset, "src.go", os.Stdin, 0)
+	file, err := parser.ParseFile(fset, "", os.Stdin, 0)
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -30,7 +30,7 @@ func main() {
 					id.Name = "setValueWrap"
 				}
 				if id.Name == "create" {
-					id.Name = "createWrap"
+					id.Name = " createWrap"
 				}
 			}
 			/*
