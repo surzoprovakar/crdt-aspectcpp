@@ -5,3 +5,4 @@
 *.d
 *.o
 !Makefile
+counter1.go
