@@ -1,1 +1,1 @@
-./counter_socket_server 2 localhost:8082 Addresses2.txt Actions2.txt
+./counter_ast_socket_server 2 localhost:8082 Addresses2.txt Actions2.txt

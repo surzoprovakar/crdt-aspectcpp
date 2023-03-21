@@ -5,4 +5,4 @@
 *.d
 *.o
 !Makefile
-counter1*.go
+counter_ast*.go

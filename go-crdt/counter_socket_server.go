@@ -89,7 +89,7 @@ func main() {
 	// Close the listener when the application closes.
 	defer l.Close()
 
-	do_actions(actions)
+	go do_actions(actions)
 
 	// run loop forever, until exit.
 	for {
