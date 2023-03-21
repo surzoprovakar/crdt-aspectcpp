@@ -26,13 +26,22 @@ func main() {
 		case *ast.CallExpr:
 			id, ok := x.Fun.(*ast.Ident)
 			if ok {
-				if id.Name == "setValue" {
+				if id.Name == "SetVal" {
 					id.Name = "setValueWrap"
 				}
-				if id.Name == "create" {
+				if id.Name == "NewCounter" {
 					id.Name = " createWrap"
 				}
 			}
+
+			s, ok := x.Fun.(*ast.SelectorExpr)
+			if ok {
+				if s.Sel.Name == "SetVal" {
+					s.Sel.Name = "setValueWrap"
+				}
+			}
+			//name := x.Fun.(*ast.Ident).Name
+			//fmt.Println("Alt name is", name)
 			/*
 				case *ast.FuncDecl:
 					if x.Name.Name == "setValue" {

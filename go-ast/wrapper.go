@@ -1,27 +1,32 @@
 package main
 
-import "fmt"
+import (
+	"fmt"
+	"time"
+)
 
 var val_check = -1
 
-func setValueWrap(v int) {
+func (c *Counter) setValueWrap(v int) {
 	fmt.Println("Before setValue:", v)
-	setValue(v)
+	c.SetVal(v)
 	val_check = v
-	check()
-	fmt.Println("After setValue")
+	fmt.Println("After setValue", c.GetVal())
+	time.Sleep(100 * time.Millisecond)
 }
 
-func createWrap(name string) {
-	create(name)
-	fmt.Println("after creating ", name)
-	fmt.Println("starting a monitoring thread")
+func createWrap(id int) *Counter {
+	c := NewCounter(id)
+	fmt.Println("after creating ", id)
+	go c.check()
+	return c
 }
 
-func check() {
-	//fmt.Println("value of check ", val_check)
-	if val_check == 10 {
-		fmt.Println("enters here")
-		setValue(5)
+func (c *Counter) check() {
+	for {
+		if val_check == 10 {
+			c.setValueWrap(5)
+		}
+		time.Sleep(100 * time.Millisecond)
 	}
 }

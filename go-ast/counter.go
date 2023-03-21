@@ -1,21 +1,25 @@
 package main
 
-import "fmt"
-
-var counter = 0
-
-func create(name string) {
-	fmt.Println("created ", name)
+type Counter struct {
+	id    int
+	value int
 }
 
-func setValue(val int) {
-	fmt.Println("setting counter to ", val)
-	counter = val
+func NewCounter(id int) *Counter {
+	return &Counter{id: id, value: 0}
+}
+
+func (c *Counter) GetVal() int {
+	return c.value
+}
+
+func (c *Counter) SetVal(new_val int) {
+	c.value = new_val
 }
 
 func main() {
-	create("counter 1")
+	c := NewCounter(11)
 	for i := 0; i < 15; i++ {
-		setValue(i + 1)
+		c.SetVal(i + 1)
 	}
 }
