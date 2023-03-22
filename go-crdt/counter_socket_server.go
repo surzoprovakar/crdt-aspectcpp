@@ -114,7 +114,7 @@ func handleConnection(conn net.Conn) {
 	// Buffer client input until a newline.
 	//buffer, err := bufio.NewReader(conn).ReadBytes('\n')
 
-	buffer := make([]byte, 128)
+	buffer := make([]byte, 192)
 	//c := bufio.NewReader(conn)
 	fmt.Println("starting to read")
 	n, err := conn.Read(buffer)
@@ -125,8 +125,8 @@ func handleConnection(conn net.Conn) {
 		return
 	}
 	fmt.Println("Read bytes from socket", n)
-	tempCounter := FromByteArray(buffer)
-	counter.Merge(tempCounter)
+	rid, rval, rtime := FromByteArray(buffer)
+	counter.Merge(rid, rval, rtime)
 
 	// Restart the process.
 	handleConnection(conn)
