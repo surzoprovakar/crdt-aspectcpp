@@ -24,5 +24,3 @@ Inc
 Inc
 2
 Broadcast
-10
-Broadcast

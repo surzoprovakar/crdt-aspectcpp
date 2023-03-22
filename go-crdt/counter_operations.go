@@ -4,6 +4,7 @@ import (
 	"encoding/binary"
 	"fmt"
 	"sync"
+	"time"
 )
 
 var mu sync.Mutex
@@ -15,8 +16,9 @@ type CounterIface interface {
 }
 
 type Counter struct {
-	id    int
-	value int
+	id       int
+	value    int
+	opt_time time.Time
 }
 
 func NewCounter(id int) *Counter {
@@ -25,6 +27,7 @@ func NewCounter(id int) *Counter {
 
 func (c *Counter) SetVal(new_val int) {
 	c.value = new_val
+	c.opt_time = time.Now()
 }
 
 func (c *Counter) Inc() {
@@ -52,7 +55,7 @@ func (c *Counter) Value() int {
 func (c *Counter) Merge(o *Counter) {
 	mu.Lock()
 	fmt.Println("Starting to merge: " + c.Print() + ", " + o.Print())
-	if c.value < o.value {
+	if c.opt_time.After(o.opt_time) {
 		new_val := o.value
 		fmt.Println("Need to Merge")
 		c.SetVal(new_val)
