@@ -6,3 +6,4 @@
 *.o
 !Makefile
 counter_ast*.go
+*.json
