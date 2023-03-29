@@ -6,7 +6,7 @@ class counter {
 		const char* name;
 		int val;
 
-		void create(const char* n) {
+		counter(const char* n) {
 			name = n;
 			cout << "created " << name << endl;
 		}

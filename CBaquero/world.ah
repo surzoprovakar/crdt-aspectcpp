@@ -33,7 +33,7 @@ static void *gregory(void *data) {
 
 aspect Counter {
 
-	advice execution("void counter::create(const char*)") && args(val) : after(const char* val) {
+	advice construction("counter") && args(val) : after(const char* val) {
 		//print "World" after execution of the 'hello()' function
 		cout << "The Aspect knows that " << val << " is created " << endl;
  		if (pthread_mutex_init(&lock, NULL) != 0) {
