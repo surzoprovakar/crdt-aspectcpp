@@ -98,7 +98,14 @@ void * constructCounter(const char* s) {
 }
 void counterInc(void * pThis) {
 	GC *pRealThis = (GC*)pThis;
+  cout << "inc by 1" << endl;
 	pRealThis->inc();
+}
+
+void counterIncVal(void * pThis, int val) {
+	GC *pRealThis = (GC*)pThis;
+  cout << "inc by " << val << endl;
+	pRealThis->inc(val);
 }
 
 void test_gcounter()
@@ -125,20 +132,23 @@ void test_gcounter()
   //gcounter<> x("idx");
   GC * p = (GC*)constructCounter("idx");
   //gcounter<> y("idy");
+  //GC * q = (GC*)constructCounter("idy");
 
 
   //x.inc();
   counterInc(p);	
   //x.inc(4);
-  counterInc(p);	
-
+  //counterIncVal(p, 4);	
 
   //y.inc();
+  counterInc(q);	
   //y.inc(2);
+  //counterIncVal(q, 2);	
 
   //cout << x << endl;
-  cout << p->local() << endl;
+  cout << "Final val:" << p->read() << endl;
   //cout << y << endl;
+  //cout << "Final val:" << q->read() << endl;
 
   // gcounter<> do1("ido1"),do2("ido2");
   // do1.inc(3);

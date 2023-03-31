@@ -18,9 +18,9 @@ static void *gregory(void *data) {
 		//release mutex
 		pthread_mutex_lock(&lock);
 		cout << "checking val " << that->local() << endl;
-		if (that->local() == 2) {
+		if (that->local() == 5) {
 			cout << "about to inc by -5!!! " << endl;
-			that->inc(-5);	
+			that->inc(-10);	
 			//return NULL;	
 		}
 		pthread_mutex_unlock(&lock);
@@ -47,6 +47,14 @@ aspect Counter {
 	
 	advice execution("void counterInc(void*)") : after() {
 		cout << "Aspect knows that the gcounter was incremented " << endl;
+		pthread_mutex_lock(&lock);
+		cout << "the incremented value of gcounter: " << that->local() << endl;
+		pthread_mutex_unlock(&lock);
+		sleep(1);
+	}
+
+	advice execution("void counterIncVal(void*, int)") && args(v, val) : after(void* v, int val) {
+		cout << "Aspect knows that the gcounter was incremented to " << val << endl;
 		pthread_mutex_lock(&lock);
 		cout << "the incremented value of gcounter: " << that->local() << endl;
 		pthread_mutex_unlock(&lock);
