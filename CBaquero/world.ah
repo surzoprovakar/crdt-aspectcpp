@@ -1,18 +1,15 @@
 #include <iostream>
 #include <unistd.h>
 #include <pthread.h>
-
 using namespace std;
 
 static pthread_mutex_t lock;
-static int value = 0;
-typedef void (*funcPtr)(int);
-static funcPtr pSetVal;
-static counter* that = NULL;
+static counter<>* that = NULL;
+template <typename V=int, typename K=string>
 
 static void *gregory(void *data) {
 	cout << "Gregory is called " << endl;
-	that = (counter*)data;
+	that = (counter<>*)data;
 	for(;;) {
 		//wait on mutex
 		//acquire mutex
@@ -20,11 +17,12 @@ static void *gregory(void *data) {
 		//if the value of counter is 10, reset it to 5
 		//release mutex
 		pthread_mutex_lock(&lock);
-		cout << "checking val " << value << endl;
-		if (value == 10) {
-			that->setValue(5);	
-			return NULL;	
-		} 
+		cout << "checking val " << that->local() << endl;
+		if (that->local() == 8) {
+			cout << "about to inc by -5!!! " << endl;
+			that->inc(-5);	
+			//return NULL;	
+		}
 		pthread_mutex_unlock(&lock);
 		sleep(1);
 	}
@@ -32,28 +30,26 @@ static void *gregory(void *data) {
 }
 
 aspect Counter {
-
-	advice construction("counter") && args(val) : after(const char* val) {
-		//print "World" after execution of the 'hello()' function
-		cout << "The Aspect knows that " << val << " is created " << endl;
+	advice execution("void * constructCounter(const char*)") && args(val): after(const char * val) {
+		cout << "The Aspect knows that counter " << val << " is created " << endl;
  		if (pthread_mutex_init(&lock, NULL) != 0) {
         		cout << "\n mutex init has failed\n";
         		exit(1);
     		}	
+		counter<> * result = (counter<>*)(*tjp->result()); 
 		pthread_t th;
-		int err = pthread_create(&th, NULL, gregory, (void*)tjp->that());	
+		int err = pthread_create(&th, NULL, gregory, result);	
 		if (err != 0) {
 			cout << "Gregory cannot be created" << endl;
 		}
 		sleep(1);	
 	}
 	
-	advice execution("void counter::setValue(int)") && args(val) : after(int val) {
-		cout << "Aspect knows that the counter was set to " << val << endl;
+	advice execution("void counterInc(void*)") : after() {
+		cout << "Aspect knows that the counter was incremented " << endl;
 		pthread_mutex_lock(&lock);
-		value = val;
+		cout << "the incremented value of counter: " << that->local() << endl;
 		pthread_mutex_unlock(&lock);
 		sleep(1);
 	}
-
 };

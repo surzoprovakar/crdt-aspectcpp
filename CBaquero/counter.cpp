@@ -1,26 +1,30 @@
 #include <iostream>
+#include <map>
 using namespace std;
 
-class counter {
-	public:
-		const char* name;
-		int val;
+template <typename V=int, typename K=string>
 
-		counter(const char* n) {
-			name = n;
+class counter {
+	private:
+  		map<K,V> m;
+  		K name;
+	
+	public:
+		counter() {} 
+  		counter(K a) : name(a) {
 			cout << "created " << name << endl;
 		}
 
-		void setValue(int v) {
-			val = v;
-			cout << "setting counter to " << val << endl;	
-		}
-};
-// void create(const char* name) {
-// 	cout << "created " << name << endl;	
-// }
+		counter inc(V tosum={1}) {
+    		counter<V,K> res;
+    		m[name]+=tosum;
+    		res.m[name]=m[name];
+    		return res;
+  		}
 
-// void setValue(int val) {
-// 	cout << "setting counter to " << val << endl;	
-// 	cnt = val;
-// }
+		V local() {
+    		V res=0;
+    		res += m[name];
+    		return res;
+  		}
+};
