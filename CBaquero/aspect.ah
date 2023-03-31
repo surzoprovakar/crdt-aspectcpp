@@ -4,12 +4,12 @@
 using namespace std;
 
 static pthread_mutex_t lock;
-static counter<>* that = NULL;
+static gcounter<>* that = NULL;
 template <typename V=int, typename K=string>
 
 static void *gregory(void *data) {
 	cout << "Gregory is called " << endl;
-	that = (counter<>*)data;
+	that = (gcounter<>*)data;
 	for(;;) {
 		//wait on mutex
 		//acquire mutex
@@ -18,7 +18,7 @@ static void *gregory(void *data) {
 		//release mutex
 		pthread_mutex_lock(&lock);
 		cout << "checking val " << that->local() << endl;
-		if (that->local() == 8) {
+		if (that->local() == 2) {
 			cout << "about to inc by -5!!! " << endl;
 			that->inc(-5);	
 			//return NULL;	
@@ -31,12 +31,12 @@ static void *gregory(void *data) {
 
 aspect Counter {
 	advice execution("void * constructCounter(const char*)") && args(val): after(const char * val) {
-		cout << "The Aspect knows that counter " << val << " is created " << endl;
+		cout << "The Aspect knows that gcounter " << val << " is created " << endl;
  		if (pthread_mutex_init(&lock, NULL) != 0) {
         		cout << "\n mutex init has failed\n";
         		exit(1);
     		}	
-		counter<> * result = (counter<>*)(*tjp->result()); 
+		gcounter<> * result = (gcounter<>*)(*tjp->result()); 
 		pthread_t th;
 		int err = pthread_create(&th, NULL, gregory, result);	
 		if (err != 0) {
@@ -46,9 +46,9 @@ aspect Counter {
 	}
 	
 	advice execution("void counterInc(void*)") : after() {
-		cout << "Aspect knows that the counter was incremented " << endl;
+		cout << "Aspect knows that the gcounter was incremented " << endl;
 		pthread_mutex_lock(&lock);
-		cout << "the incremented value of counter: " << that->local() << endl;
+		cout << "the incremented value of gcounter: " << that->local() << endl;
 		pthread_mutex_unlock(&lock);
 		sleep(1);
 	}

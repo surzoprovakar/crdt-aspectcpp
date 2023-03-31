@@ -13,14 +13,14 @@ OBJECTS := $(addprefix $(JUNK)/,$(patsubst %.cpp,%.o,$(SOURCES)))
 all: $(PROG)
 
 run: all
-	@./counter
+	@./CBaquero-crdts
 
 $(PROG): $(OBJECTS)
-	@#echo Linking counter
-	@$(CXX) $(CXXFLAGS) -o counter $(OBJECTS) $(LDFLAGS) -lpthread
+	@echo Linking CBaquero-crdts
+	@$(CXX) $(CXXFLAGS) -o CBaquero-crdts $(OBJECTS) $(LDFLAGS) -lpthread
 
 clean:
-	@rm -rf *.o $(JUNK) counter
+	@rm -rf *.o $(JUNK) CBaquero-crdts
 
 $(JUNK)/%.o : %.cpp
 	@echo Compiling $<
