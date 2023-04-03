@@ -36,6 +36,7 @@
 #include <chrono>
 //#define NDEBUG  // Uncoment do stop testing asserts
 #include <assert.h>
+#include <unistd.h>
 #include "delta-crdts.cpp"
 
 using namespace std;
@@ -138,10 +139,10 @@ void test_gcounter()
   //x.inc();
   counterInc(p);	
   //x.inc(4);
-  //counterIncVal(p, 4);	
+  counterIncVal(p, 4);	
 
   //y.inc();
-  counterInc(q);	
+  //counterInc(q);	
   //y.inc(2);
   //counterIncVal(q, 2);	
 
@@ -163,26 +164,61 @@ void test_gcounter()
   // cout << do2 << endl;
 }
 
+
+typedef pncounter<float,int> PNC;
+void * constructPNCounter(int id) {
+	 return new PNC(id);
+}
+void PNcounterInc(void * pThis) {
+	PNC *pRealThis = (PNC*)pThis;
+  cout << "inc by 1" << endl;
+	pRealThis->inc();
+}
+
+void PNcounterIncVal(void * pThis, float val) {
+	PNC *pRealThis = (PNC*)pThis;
+  cout << "inc by " << val << endl;
+	pRealThis->inc(val);
+}
+void PNcounterDec(void * pThis) {
+	PNC *pRealThis = (PNC*)pThis;
+  cout << "dec by 1" << endl;
+	pRealThis->dec();
+}
+
+void PNcounterDecVal(void * pThis, float val) {
+	PNC *pRealThis = (PNC*)pThis;
+  cout << "dec by " << val << endl;
+	pRealThis->dec(val);
+}
+
 void test_pncounter()
 {
   cout << "--- Testing: pncounter --\n";
   // counter with ints in keys and floats in values
-  pncounter<float,int> o1(2);
-  pncounter<float,int> o2(5);
-  pncounter<float,int> do1,do2;
+  //pncounter<float,int> o1(2);
+  PNC * pn = (PNC*)constructPNCounter(2);
+  //pncounter<float,int> o2(5);
+  //pncounter<float,int> do1,do2;
 
-  do1.join(o1.inc(3.5));
-  do1.join(o1.dec(2));
+  PNcounterInc(pn);
+  PNcounterInc(pn);
+  PNcounterIncVal(pn, 3.5);
+  //do1.join(o1.inc(3.5));
+  //do1.join(o1.dec(2));
+  PNcounterDec(pn);
+  PNcounterDecVal(pn, 0.5);
 
-  do2.join(o2.inc());
-  do2.join(o2.inc(5));
+  //do2.join(o2.inc());
+  //do2.join(o2.inc(5));
 
-  pncounter<float,int> o3 = join(o1,o2);
-  pncounter<float,int> o4 = join(join(o1,do2),join(o2,do1));
+  //pncounter<float,int> o3 = join(o1,o2);
+  //pncounter<float,int> o4 = join(join(o1,do2),join(o2,do1));
 
-  cout << o3 << endl;
-  cout << o4 << endl;
-  cout << o3.read() << endl;
+  //cout << o3 << endl;
+  //cout << o4 << endl;
+  //cout << o3.read() << endl;
+  cout << "Final val:" << pn->read() << endl;
 }
 
 /*
@@ -230,8 +266,7 @@ void test_aworset()
   o5.add("hello");
   o5.add("world");
   o5.add("my");
-  cout << o5 << endl;
-}
+  cout << o5 << endl;}
 
 void test_rworset()
 {
@@ -1075,7 +1110,8 @@ int main(int argc, char * argv[])
   // test_gset();
   // test_twopset();
   test_gcounter();
-  //test_pncounter();
+  sleep(3);
+  test_pncounter();
   // test_lexcounter();
   // test_aworset();
   // test_rworset();

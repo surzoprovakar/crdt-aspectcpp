@@ -5,7 +5,8 @@ using namespace std;
 
 static pthread_mutex_t lock;
 static gcounter<>* that = NULL;
-template <typename V=int, typename K=string>
+static pncounter<float, int>* pnc = NULL;
+
 
 static void *gregory(void *data) {
 	cout << "Gregory is called " << endl;
@@ -17,10 +18,10 @@ static void *gregory(void *data) {
 		//if the value of counter is 10, reset it to 5
 		//release mutex
 		pthread_mutex_lock(&lock);
-		cout << "checking val " << that->local() << endl;
-		if (that->local() == 5) {
-			cout << "about to inc by -5!!! " << endl;
-			that->inc(-10);	
+		//cout << "checking val " << that->local() << endl;
+		if (that->local() >= 5) {
+			cout << "about to inc by -3!!! " << endl;
+			that->inc(-3);	
 			//return NULL;	
 		}
 		pthread_mutex_unlock(&lock);
@@ -29,7 +30,29 @@ static void *gregory(void *data) {
 	return NULL;	
 }
 
-aspect Counter {
+static void *gregory_pnc(void *data) {
+	cout << "Gregory_pnc is called " << endl;
+	pnc = (pncounter<float, int>*)data;
+	for(;;) {
+		//wait on mutex
+		//acquire mutex
+		//check the value of counter
+		//if the value of counter is 10, reset it to 5
+		//release mutex
+		pthread_mutex_lock(&lock);
+		//cout << "checking val " << pnc->local() << endl;
+		if (pnc->local() >= 4) {
+			cout << "about to dec by 3!!! " << endl;
+			pnc->dec(3);	
+			//return NULL;	
+		}
+		pthread_mutex_unlock(&lock);
+		sleep(1);
+	}
+	return NULL;	
+}
+
+aspect GCounter {
 	advice execution("void * constructCounter(const char*)") && args(val): after(const char * val) {
 		cout << "The Aspect knows that gcounter " << val << " is created " << endl;
  		if (pthread_mutex_init(&lock, NULL) != 0) {
@@ -61,3 +84,54 @@ aspect Counter {
 		sleep(1);
 	}
 };
+
+
+aspect PNCounter {
+	advice execution("void * constructPNCounter(int)") && args(val): after(int val) {
+		cout << "The Aspect knows that pncounter " << val << " is created " << endl;
+ 		if (pthread_mutex_init(&lock, NULL) != 0) {
+        		cout << "\n mutex init has failed\n";
+        		exit(1);
+    		}	
+		pncounter<> * result = (pncounter<>*)(*tjp->result()); 
+		pthread_t th;
+		int err = pthread_create(&th, NULL, gregory_pnc, result);	
+		if (err != 0) {
+			cout << "Gregory_pnc cannot be created" << endl;
+		}
+		sleep(1);	
+	}
+	
+	advice execution("void PNcounterInc(void*)") : after() {
+		cout << "Aspect knows that the pncounter was incremented " << endl;
+		pthread_mutex_lock(&lock);
+		cout << "the incremented value of pncounter: " << pnc->local() << endl;
+		pthread_mutex_unlock(&lock);
+		sleep(1);
+	}
+
+	advice execution("void PNcounterIncVal(void*, float)") && args(v, val) : after(void* v, float val) {
+		cout << "Aspect knows that the pncounter was incremented to " << val << endl;
+		pthread_mutex_lock(&lock);
+		cout << "the incremented value of gcounter: " << pnc->local() << endl;
+		pthread_mutex_unlock(&lock);
+		sleep(1);
+	}
+
+	advice execution("void PNcounterDec(void*)") : after() {
+		cout << "Aspect knows that the pncounter was decremented " << endl;
+		pthread_mutex_lock(&lock);
+		cout << "the decremented value of pncounter: " << pnc->local() << endl;
+		pthread_mutex_unlock(&lock);
+		sleep(1);
+	}
+
+	advice execution("void PNcounterDecVal(void*, float)") && args(v, val) : after(void* v, float val) {
+		cout << "Aspect knows that the pncounter was decremented to " << val << endl;
+		pthread_mutex_lock(&lock);
+		cout << "the decremented value of gcounter: " << pnc->local() << endl;
+		pthread_mutex_unlock(&lock);
+		sleep(1);
+	}
+};
+
