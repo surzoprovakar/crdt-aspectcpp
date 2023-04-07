@@ -8,7 +8,6 @@ namespace cs_crdt {
         public GCounter(string n) {
             this.name = n;
             this.value = 0;
-            Console.WriteLine("G Counter " + this.name + " is created");
         }
 
         public void Increment() {
@@ -21,6 +20,10 @@ namespace cs_crdt {
 
         public int GetVal() {
             return this.value;
+        }
+
+        public string GetName() {
+            return this.name;
         }
     }
 }

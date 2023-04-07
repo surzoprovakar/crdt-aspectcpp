@@ -7,3 +7,4 @@
 !Makefile
 counter_ast*.go
 *.json
+*.exe
