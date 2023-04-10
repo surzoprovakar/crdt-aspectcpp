@@ -86,8 +86,8 @@ namespace cs_crdt {
                 if (pn_val == 1) {
                     PNIncrement(6);
                 }
+                Thread.Sleep(1000);
             }
-            Thread.Sleep(1000);
         }
     }
 }
