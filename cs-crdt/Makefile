@@ -6,4 +6,4 @@ build:
 run:
 	@mono main.exe
 clean:
-	@rm -rf *.exe main*
+	@rm -rf *.exe main* Rewrite/bin Rewrite/obj
