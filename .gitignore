@@ -12,3 +12,9 @@ main.cs
 
 /cs-crdt/Rewrite/bin/*
 /cs-crdt/Rewrite/obj/*
+
+!package.json
+!package-lock.json
+
+/conclave-js/node_modules/*
+/conclave-js/performance/comparisons/*
