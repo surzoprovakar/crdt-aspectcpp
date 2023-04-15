@@ -14,4 +14,3 @@ run:
 clean:
 	@rm -rf public/js/
 	@-sudo fuser -kf 3000/tcp
-	

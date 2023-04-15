@@ -18,7 +18,7 @@ class CRDT {
     const char = this.generateChar(value, pos);
     this.insertChar(char, pos);
     this.controller.broadcastInsertion(char);
-    console.log("crdt local inserted char " + char.value)
+    //console.log("crdt local inserted char " + char.value)
   }
 
   handleRemoteInsert(char) {
@@ -92,7 +92,7 @@ class CRDT {
       chars = chars.concat(this.struct[endPos.line].splice(0, endPos.ch));
     }
 
-    console.log("crdt local deleted multiple-lines char [n]")
+    //console.log("crdt local deleted multiple-lines char [n]")
     return chars;
   }
 
@@ -101,7 +101,7 @@ class CRDT {
     let chars = this.struct[startPos.line].splice(startPos.ch, charNum);
 
     //console.log("crdt local deleted singleline char: " + JSON.stringify(chars))
-    console.log("crdt local deleted single-line char: " + chars[0].value)
+    //console.log("crdt local deleted single-line char: " + chars[0].value)
 
     return chars;
   }
