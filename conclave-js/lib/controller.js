@@ -168,6 +168,7 @@ class Controller {
     const textnode = doc.createTextNode("(You)")
     const color = generateItemFromHash(this.siteId, CSS_COLORS);
     const name = generateItemFromHash(this.siteId, ANIMALS);
+    console.log(name + " is created as peer")
 
     node.textContent = name;
     node.style.backgroundColor = color;

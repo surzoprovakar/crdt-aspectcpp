@@ -18,3 +18,4 @@ main.cs
 
 /conclave-js/node_modules/*
 /conclave-js/performance/comparisons/*
+/conclave-js/public/js/*
