@@ -67,6 +67,8 @@ const updatedCode = escodegen.generate(ast1);
 console.log("updatedCode");
 console.log(updatedCode);
 
+fs.writeFileSync('../lib/controller.js', updatedCode)
+
 
 // For crdt class
 const ast2 = esprima.parseModule(fs.readFileSync('../lib/crdt.js').toString())
@@ -109,3 +111,5 @@ const updatedCode2 = escodegen.generate(ast2);
 
 console.log("updatedCode2");
 console.log(updatedCode2);
+
+fs.writeFileSync('../lib/crdt.js', updatedCode2)
